@@ -1,122 +1,297 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'screens/home_screen.dart';
+import 'screens/about_screen.dart';
+import 'screens/skills_screen.dart';
+import 'screens/projects_screen.dart';
+import 'screens/experience_screen.dart';
+import 'screens/contact_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ResumeApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ResumeApp extends StatelessWidget {
+  const ResumeApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'JOBIN P THOMAS - R&D Engineer',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF667EEA),
+          brightness: Brightness.light,
+        ),
+        textTheme: GoogleFonts.interTextTheme(),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainResumeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MainResumeScreen extends StatefulWidget {
+  const MainResumeScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainResumeScreen> createState() => _MainResumeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MainResumeScreenState extends State<MainResumeScreen> with TickerProviderStateMixin {
+  int _currentIndex = 0;
+  final PageController _pageController = PageController();
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+    _animationController.forward();
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOutCubic,
+    );
+  }
+
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const AboutScreen(),
+    const SkillsScreen(),
+    const ProjectsScreen(),
+    const ExperienceScreen(),
+    const ContactScreen(),
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      backgroundColor: Colors.white,
+      body: FadeTransition(
+        opacity: _fadeAnimation,
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          children: [
+            // Top Navigation Bar
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 20,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  child: Row(
+                    children: [
+                      // Logo/Name Section
+                      Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF667EEA),
+                                  Color(0xFF764BA2),
+                                ],
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Text(
+                            'JOBIN P THOMAS',
+                            style: GoogleFonts.inter(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: const Color(0xFF1A202C),
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                      const Spacer(),
+                      
+                      // Desktop Navigation
+                      if (MediaQuery.of(context).size.width > 768)
+                        Row(
+                          children: [
+                            _buildNavItem(0, 'Home'),
+                            _buildNavItem(1, 'About'),
+                            _buildNavItem(2, 'Skills'),
+                            _buildNavItem(3, 'Projects'),
+                            _buildNavItem(4, 'Experience'),
+                            _buildNavItem(5, 'Contact'),
+                          ],
+                        ),
+                      
+                      // Mobile Menu Button
+                      if (MediaQuery.of(context).size.width <= 768)
+                        IconButton(
+                          onPressed: () {
+                            // Show mobile menu
+                            _showMobileMenu(context);
+                          },
+                          icon: const Icon(
+                            Icons.menu,
+                            color: Color(0xFF1A202C),
+                            size: 28,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            
+            // Main Content
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                children: _screens,
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Widget _buildNavItem(int index, String title) {
+    final isSelected = _currentIndex == index;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: InkWell(
+        onTap: () => _onItemTapped(index),
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF667EEA).withValues(alpha: 0.1) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              color: isSelected ? const Color(0xFF667EEA) : const Color(0xFF4A5568),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showMobileMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ...List.generate(
+              ['Home', 'About', 'Skills', 'Projects', 'Experience', 'Contact'].length,
+              (index) => ListTile(
+                leading: Icon(
+                  _getIconForIndex(index),
+                  color: _currentIndex == index ? const Color(0xFF667EEA) : const Color(0xFF4A5568),
+                ),
+                title: Text(
+                  ['Home', 'About', 'Skills', 'Projects', 'Experience', 'Contact'][index],
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: _currentIndex == index ? FontWeight.w600 : FontWeight.w500,
+                    color: _currentIndex == index ? const Color(0xFF667EEA) : const Color(0xFF1A202C),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _onItemTapped(index);
+                },
+                tileColor: _currentIndex == index ? const Color(0xFF667EEA).withValues(alpha: 0.05) : null,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getIconForIndex(int index) {
+    switch (index) {
+      case 0: return Icons.home;
+      case 1: return Icons.person;
+      case 2: return Icons.psychology;
+      case 3: return Icons.work;
+      case 4: return Icons.business;
+      case 5: return Icons.contact_mail;
+      default: return Icons.home;
+    }
   }
 }
