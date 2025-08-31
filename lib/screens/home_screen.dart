@@ -75,6 +75,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 150 : 130),
                                   height: 200,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Container(
+                                    width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 150 : 130),
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.error, color: Colors.red, size: 32),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          'Image Error',
+                                          style: TextStyle(color: Colors.red, fontSize: 12),
+                                        ),
+                                        Text(
+                                          imageAssets[index],
+                                          style: TextStyle(color: Colors.grey, fontSize: 10),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
