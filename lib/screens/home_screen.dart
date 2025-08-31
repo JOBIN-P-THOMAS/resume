@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
-import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,12 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // Auto-scrolling for SingleChildScrollView
-  late ScrollController _scrollController;
-  Timer? _scrollTimer;
-  int _currentIndex = 0;
-  
-  // Image assets for the scrolling background
+  // Image assets for the background
   final List<String> imageAssets = [
     'assets/images/PCB.jpg',
     'assets/images/SCOLL_IMAGE.JPG',
@@ -26,47 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'assets/images/123.jpg',
     'assets/images/3d.jpg',
     'assets/images/cnc.jpeg',
-    // Repeat for seamless loop
-    'assets/images/PCB.jpg',
-    'assets/images/SCOLL_IMAGE.JPG',
-    'assets/images/TESTER.jpg',
-    'assets/images/123.jpg',
-    'assets/images/3d.jpg',
-    'assets/images/cnc.jpeg',
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _startAutoScroll();
-  }
-
-  @override
-  void dispose() {
-    _scrollTimer?.cancel();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _startAutoScroll() {
-    _scrollTimer = Timer.periodic(const Duration(milliseconds: 50000), (timer) {
-      if (_scrollController.hasClients) {
-        // Get current scroll position
-        double currentPosition = _scrollController.offset;
-        
-        // Calculate next position (move 2 pixels at a time for smooth movement)
-        double nextPosition = currentPosition + 2.0;
-        
-        // If we've scrolled past the first set of images, reset to beginning seamlessly
-        if (nextPosition >= (imageAssets.length / 2) * 192.0) {
-          nextPosition = 0.0;
-        }
-        
-        _scrollController.jumpTo(nextPosition);
-      }
-    });
-  }
 
   Future<void> _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
@@ -104,32 +58,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Column(
                   children: [
-                                        // New Clean Approach: Auto-scrolling Horizontal Images
+                    // Static Background Images
                     Container(
                       width: double.infinity,
                       height: 200,
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            ...List.generate(imageAssets.length, (index) => Opacity(
-                              opacity: 0.15 - (index % 6) * 0.01, // Varying opacity for visual interest
-                              child: Transform.rotate(
-                                angle: (index % 6) * 10 * math.pi / 180 - 15 * math.pi / 180, // Varying rotation
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 12),
-                                  child: Image.asset(
-                                    imageAssets[index],
-                                    width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 180 : 150),
-                                    height: 200,
-                                    fit: BoxFit.cover,
-                                  ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ...List.generate(imageAssets.length, (index) => Opacity(
+                            opacity: 0.15 - (index % 6) * 0.01, // Varying opacity for visual interest
+                            child: Transform.rotate(
+                              angle: (index % 6) * 10 * math.pi / 180 - 15 * math.pi / 180, // Varying rotation
+                              child: Container(
+                                child: Image.asset(
+                                  imageAssets[index],
+                                  width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 150 : 130),
+                                  height: 200,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            )),
-                          ],
-                        ),
+                            ),
+                          )),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 20),
