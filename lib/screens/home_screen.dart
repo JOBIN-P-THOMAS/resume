@@ -234,7 +234,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       StatCard('100+', 'Projects', Icons.rocket_launch, const Color(0xFF667EEA)),
                       StatCard('7+', 'Years Exp', Icons.trending_up, const Color(0xFF48BB78)),
-                      StatCard('40+', 'Colleges', Icons.school, const Color(0xFFED8936)),
+                      StatCard('40+', 'Workshops', Icons.school, const Color(0xFFED8936)),
                       StatCard('70%', 'Innovations', Icons.lightbulb, const Color(0xFF9F7AEA)),
                     ],
                   ),
