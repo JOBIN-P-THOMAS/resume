@@ -1,6 +1,6 @@
 # Jobin P Thomas - Interactive Resume App
 
-<!-- Triggering GitHub Actions deployment - Images Fixed -->
+<!-- Triggering GitHub Actions deployment - Assets Verified Working -->
 
 A modern, professional **Flutter web application** showcasing the portfolio of Jobin P Thomas, an accomplished R&D Engineer. This app is designed to work perfectly in **Chrome browsers** and looks stunning on **mobile devices**.
 
