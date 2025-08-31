@@ -64,20 +64,22 @@ class HomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
-                          image: const DecorationImage(
-                            image: AssetImage('assets/images/profile.jpg'),
-                            fit: BoxFit.cover,
-                          ),
                         ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: const Color(0xFF667EEA).withValues(alpha: 0.1),
-                          ),
-                          child: const Icon(
-                            Icons.person,
-                            size: 80,
-                            color: Color(0xFF667EEA),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/profile/profile.jpg',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: const Color(0xFF667EEA).withValues(alpha: 0.1),
+                              ),
+                              child: const Icon(
+                                Icons.person,
+                                size: 80,
+                                color: Color(0xFF667EEA),
+                              ),
+                            ),
                           ),
                         ),
                       ),
