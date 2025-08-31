@@ -2,9 +2,71 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:math' as math;
+import 'dart:async';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // Auto-scrolling for SingleChildScrollView
+  late ScrollController _scrollController;
+  Timer? _scrollTimer;
+  int _currentIndex = 0;
+  
+  // Image assets for the scrolling background
+  final List<String> imageAssets = [
+    'assets/images/PCB.jpg',
+    'assets/images/SCOLL_IMAGE.JPG',
+    'assets/images/TESTER.jpg',
+    'assets/images/123.jpg',
+    'assets/images/3d.jpg',
+    'assets/images/cnc.jpeg',
+    // Repeat for seamless loop
+    'assets/images/PCB.jpg',
+    'assets/images/SCOLL_IMAGE.JPG',
+    'assets/images/TESTER.jpg',
+    'assets/images/123.jpg',
+    'assets/images/3d.jpg',
+    'assets/images/cnc.jpeg',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _startAutoScroll();
+  }
+
+  @override
+  void dispose() {
+    _scrollTimer?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoScroll() {
+    _scrollTimer = Timer.periodic(const Duration(milliseconds: 50000), (timer) {
+      if (_scrollController.hasClients) {
+        // Get current scroll position
+        double currentPosition = _scrollController.offset;
+        
+        // Calculate next position (move 2 pixels at a time for smooth movement)
+        double nextPosition = currentPosition + 2.0;
+        
+        // If we've scrolled past the first set of images, reset to beginning seamlessly
+        if (nextPosition >= (imageAssets.length / 2) * 192.0) {
+          nextPosition = 0.0;
+        }
+        
+        _scrollController.jumpTo(nextPosition);
+      }
+    });
+  }
 
   Future<void> _launchURL(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
@@ -36,13 +98,46 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 40),
+                padding: EdgeInsets.symmetric(
+                  vertical: isWide ? 120 : 80,
+                  horizontal: isWide ? 40 : 20,
+                ),
                 child: Column(
                   children: [
+                                        // New Clean Approach: Auto-scrolling Horizontal Images
+                    Container(
+                      width: double.infinity,
+                      height: 200,
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            ...List.generate(imageAssets.length, (index) => Opacity(
+                              opacity: 0.15 - (index % 6) * 0.01, // Varying opacity for visual interest
+                              child: Transform.rotate(
+                                angle: (index % 6) * 10 * math.pi / 180 - 15 * math.pi / 180, // Varying rotation
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 12),
+                                  child: Image.asset(
+                                    imageAssets[index],
+                                    width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 180 : 150),
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            )),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    
                     // Profile Image
                     Container(
-                      width: 180,
-                      height: 180,
+                      width: isWide ? 180 : 140,
+                      height: isWide ? 180 : 140,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: const LinearGradient(
@@ -67,7 +162,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: ClipOval(
                           child: Image.asset(
-                            'assets/images/profile/profile.jpg',
+                            'assets/images/Profile.JPG',
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) => Container(
                               decoration: BoxDecoration(
@@ -91,10 +186,10 @@ class HomeScreen extends StatelessWidget {
                     Text(
                       'JOBIN P THOMAS',
                       style: GoogleFonts.inter(
-                        fontSize: 48,
+                        fontSize: isWide ? 48 : 32,
                         fontWeight: FontWeight.w900,
                         color: const Color(0xFF1A202C),
-                        letterSpacing: 2,
+                        letterSpacing: isWide ? 2 : 1,
                         height: 1.1,
                       ),
                       textAlign: TextAlign.center,
@@ -104,7 +199,10 @@ class HomeScreen extends StatelessWidget {
                     
                     // Title Badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isWide ? 32 : 20,
+                        vertical: isWide ? 16 : 12,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF667EEA),
                         borderRadius: BorderRadius.circular(50),
@@ -119,7 +217,7 @@ class HomeScreen extends StatelessWidget {
                       child: Text(
                         'R&D Engineer & Innovation Leader',
                         style: GoogleFonts.inter(
-                          fontSize: 20,
+                          fontSize: isWide ? 20 : 16,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
                           letterSpacing: 0.5,
@@ -131,12 +229,12 @@ class HomeScreen extends StatelessWidget {
                     
                     // Tagline
                     Container(
-                      constraints: const BoxConstraints(maxWidth: 800),
+                      constraints: BoxConstraints(maxWidth: isWide ? 800 : 600),
                       child: Text(
                         'From age 7, my passion for technology led me to create 100+ projects, gaining diverse skills and mastery in various disciplines with hands-on problem-solving experience.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
-                          fontSize: 20,
+                          fontSize: isWide ? 20 : 16,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xFF4A5568),
                           height: 1.6,
@@ -227,10 +325,11 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 80),
                   GridView.count(
                     shrinkWrap: true,
-                    crossAxisSpacing: 40,
-                    mainAxisSpacing: 40,
-                    crossAxisCount: isWide ? 4 : 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    crossAxisCount: isWide ? 4 : (MediaQuery.of(context).size.width > 600 ? 2 : 1),
                     physics: NeverScrollableScrollPhysics(),
+                    childAspectRatio: isWide ? 1.2 : 1.0,
                     children: [
                       StatCard('100+', 'Projects', Icons.rocket_launch, const Color(0xFF667EEA)),
                       StatCard('7+', 'Years Exp', Icons.trending_up, const Color(0xFF48BB78)),
@@ -389,7 +488,7 @@ class StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(40),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -407,33 +506,40 @@ class StatCard extends StatelessWidget {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: color, size: 40),
+            child: Icon(icon, color: color, size: 32),
           ),
-          const SizedBox(height: 24),
-          Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 36,
-              fontWeight: FontWeight.w900,
-              color: const Color(0xFF1A202C),
+          const SizedBox(height: 16),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                color: const Color(0xFF1A202C),
+              ),
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: color,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -631,14 +737,14 @@ class SocialSection extends StatelessWidget {
             icon: FontAwesomeIcons.github,
             title: 'GitHub',
             subtitle: 'Code Portfolio',
-            onTap: () => launchURL('https://github.com/jobinpthomas'),
+            onTap: () => launchURL('https://github.com/JOBIN-P-THOMAS'),
             color: const Color(0xFF1A202C),
           ),
           SocialCard(
             icon: FontAwesomeIcons.cube,
             title: 'GrabCAD',
             subtitle: '3D Models & Designs',
-            onTap: () => launchURL('https://grabcad.com/jobinpthomas'),
+            onTap: () => launchURL('https://grabcad.com/jobin.thomas-4'),
             color: const Color(0xFF667EEA),
           ),
         ],
