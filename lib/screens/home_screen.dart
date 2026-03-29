@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 
+import '../utils/resume_download.dart';
+
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  /// Main shell page indices: 0 Home, 3 Projects, 5 Contact.
+  final void Function(int pageIndex)? onNavigateToPage;
+
+  const HomeScreen({super.key, this.onNavigateToPage});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -31,23 +37,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 900;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: scheme.surface,
       body: SingleChildScrollView(
         child: Column(
           children: [
             // Hero Section
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFFF7FAFC),
-                    Color(0xFFEDF2F7),
-                    Color(0xFFE2E8F0),
+                    scheme.surfaceContainerHighest.withValues(alpha: 0.45),
+                    scheme.surface,
+                    scheme.surfaceContainerLow.withValues(alpha: 0.3),
                   ],
                 ),
               ),
@@ -58,52 +65,54 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Column(
                   children: [
-                    // Static Background Images
-                    Container(
-                      width: double.infinity,
+                    // Static background strip — scrolls on narrow widths to avoid overflow
+                    SizedBox(
                       height: 200,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ...List.generate(imageAssets.length, (index) => Opacity(
-                            opacity: 0.15 - (index % 6) * 0.01, // Varying opacity for visual interest
-                            child: Transform.rotate(
-                              angle: (index % 6) * 10 * math.pi / 180 - 15 * math.pi / 180, // Varying rotation
-                              child: Container(
-                                child: Image.asset(
-                                  imageAssets[index],
-                                  width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 150 : 130),
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => Container(
-                                    width: MediaQuery.of(context).size.width < 600 ? 120 : (isWide ? 150 : 130),
-                                    height: 200,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.withValues(alpha: 0.3),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.error, color: Colors.red, size: 32),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          'Image Error',
-                                          style: TextStyle(color: Colors.red, fontSize: 12),
+                      width: double.infinity,
+                      child: ClipRect(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ...List.generate(imageAssets.length, (index) {
+                                final w = MediaQuery.of(context).size.width < 600 ? 110.0 : (isWide ? 140.0 : 120.0);
+                                return Opacity(
+                                  opacity: 0.15 - (index % 6) * 0.01,
+                                  child: Transform.rotate(
+                                    angle: (index % 6) * 10 * math.pi / 180 - 15 * math.pi / 180,
+                                    child: Image.asset(
+                                      imageAssets[index],
+                                      width: w,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) => Container(
+                                        width: w,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.withValues(alpha: 0.3),
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                        Text(
-                                          imageAssets[index],
-                                          style: TextStyle(color: Colors.grey, fontSize: 10),
-                                          textAlign: TextAlign.center,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(Icons.error, color: Colors.red, size: 28),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              imageAssets[index],
+                                              style: const TextStyle(color: Colors.grey, fontSize: 9),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          )),
-                        ],
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -156,114 +165,140 @@ class _HomeScreenState extends State<HomeScreen> {
                     
                     const SizedBox(height: 40),
                     
-                    // Name
                     Text(
                       'JOBIN P THOMAS',
                       style: GoogleFonts.inter(
                         fontSize: isWide ? 48 : 32,
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFF1A202C),
+                        color: scheme.onSurface,
                         letterSpacing: isWide ? 2 : 1,
                         height: 1.1,
                       ),
                       textAlign: TextAlign.center,
-                    ),
-                    
+                    ).animate().fadeIn(duration: 450.ms).slideY(begin: 0.04, curve: Curves.easeOutCubic),
+
                     const SizedBox(height: 20),
-                    
-                    // Title Badge
+
                     Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: isWide ? 32 : 20,
-                        vertical: isWide ? 16 : 12,
+                        horizontal: isWide ? 28 : 18,
+                        vertical: isWide ? 14 : 10,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF667EEA),
+                        color: scheme.primary,
                         borderRadius: BorderRadius.circular(50),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF667EEA).withValues(alpha: 0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            color: scheme.primary.withValues(alpha: 0.28),
+                            blurRadius: 18,
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
                       child: Text(
-                        'R&D Engineer & Innovation Leader',
+                        'Embedded Systems Engineer — product & R&D',
                         style: GoogleFonts.inter(
-                          fontSize: isWide ? 20 : 16,
+                          fontSize: isWide ? 18 : 14,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Tagline
-                    Container(
-                      constraints: BoxConstraints(maxWidth: isWide ? 800 : 600),
-                      child: Text(
-                        'From age 7, my passion for technology led me to create 100+ projects, gaining diverse skills and mastery in various disciplines with hands-on problem-solving experience.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: isWide ? 20 : 16,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF4A5568),
-                          height: 1.6,
+                          color: scheme.onPrimary,
                           letterSpacing: 0.3,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    
-                    const SizedBox(height: 50),
-                    
-                    // CTA Button
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF667EEA),
-                            Color(0xFF764BA2),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(50),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF667EEA).withValues(alpha: 0.4),
-                            blurRadius: 30,
-                            offset: const Offset(0, 15),
+
+                    const SizedBox(height: 28),
+
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: isWide ? 820 : 640),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Embedded Systems Engineer building real-world products from concept to production',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: isWide ? 26 : 20,
+                              fontWeight: FontWeight.w800,
+                              color: scheme.onSurface,
+                              height: 1.35,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Reliability first: hardware–software integration, RTOS and bare-metal STM32 work, and design that survives manufacturing. '
+                            'I ship in production environments—PCB bring-up, plant-level debugging, EMI-aware layouts, and firmware that matches the real machine.',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: isWide ? 17 : 15,
+                              fontWeight: FontWeight.w400,
+                              color: scheme.onSurfaceVariant,
+                              height: 1.65,
+                            ),
                           ),
                         ],
                       ),
-                      child: ElevatedButton(
-                        onPressed: () => _launchURL('mailto:jobinpthomas1@gmail.com'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                    ).animate().fadeIn(delay: 120.ms, duration: 500.ms),
+
+                    const SizedBox(height: 36),
+
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 14,
+                      runSpacing: 14,
+                      children: [
+                        FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+                          ),
+                          onPressed: () => widget.onNavigateToPage?.call(3),
+                          icon: const Icon(Icons.folder_open_outlined, size: 20),
+                          label: Text(
+                            'View Projects',
+                            style: GoogleFonts.inter(fontWeight: FontWeight.w700),
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.email, size: 24, color: Colors.white),
-                            const SizedBox(width: 16),
-                            Text(
-                              'Get In Touch',
-                              style: GoogleFonts.inter(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+                          ),
+                          onPressed: () => widget.onNavigateToPage?.call(5),
+                          icon: const Icon(Icons.mail_outline, size: 20),
+                          label: Text(
+                            'Contact Me',
+                            style: GoogleFonts.inter(fontWeight: FontWeight.w700),
+                          ),
                         ),
-                      ),
+                        FilledButton.tonalIcon(
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
+                          ),
+                          onPressed: () => openBundledResume(context),
+                          icon: const Icon(Icons.download_outlined, size: 20),
+                          label: Text(
+                            'Download Resume',
+                            style: GoogleFonts.inter(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ],
+                    ).animate().fadeIn(delay: 220.ms, duration: 450.ms),
+
+                    const SizedBox(height: 28),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton.filledTonal(
+                          tooltip: 'LinkedIn',
+                          onPressed: () => _launchURL('https://linkedin.com/in/jobinpthomas'),
+                          icon: const Icon(FontAwesomeIcons.linkedin, size: 18),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton.filledTonal(
+                          tooltip: 'GitHub',
+                          onPressed: () => _launchURL('https://github.com/JOBIN-P-THOMAS'),
+                          icon: const Icon(FontAwesomeIcons.github, size: 18),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -273,28 +308,29 @@ class _HomeScreenState extends State<HomeScreen> {
             // Achievements Section
             Container(
               width: double.infinity,
-              color: Colors.white,
+              color: scheme.surfaceContainerLow.withValues(alpha: 0.35),
               padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Key Achievements',
+                    'At a glance',
                     style: GoogleFonts.inter(
                       fontSize: 42,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
+                      color: scheme.onSurface,
+                      letterSpacing: 1.2,
                     ),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Numbers that speak for themselves',
+                    'Volume of builds, teaching, and ownership — not vanity metrics.',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w400,
-                      color: const Color(0xFF4A5568),
+                      color: scheme.onSurfaceVariant,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 80),
                   GridView.count(
@@ -302,13 +338,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
                     crossAxisCount: isWide ? 4 : (MediaQuery.of(context).size.width > 600 ? 2 : 1),
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     childAspectRatio: isWide ? 1.2 : 1.0,
                     children: [
-                      StatCard('100+', 'Projects', Icons.rocket_launch, const Color(0xFF667EEA)),
-                      StatCard('7+', 'Years Exp', Icons.trending_up, const Color(0xFF48BB78)),
-                      StatCard('40+', 'Workshops', Icons.school, const Color(0xFFED8936)),
-                      StatCard('70%', 'Innovations', Icons.lightbulb, const Color(0xFF9F7AEA)),
+                      StatCard('100+', 'Shipped & personal builds', Icons.rocket_launch, scheme.primary),
+                      StatCard('7+', 'Years hands-on', Icons.trending_up, const Color(0xFF48BB78)),
+                      StatCard('40+', 'College workshops', Icons.school, const Color(0xFFED8936)),
+                      StatCard('Plant', 'Production debug', Icons.precision_manufacturing, const Color(0xFF9F7AEA)),
                     ],
                   ),
                 ],
@@ -318,7 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // Contact Section
             Container(
               width: double.infinity,
-              color: const Color(0xFFF7FAFC),
+              color: scheme.surface,
               padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
               child: Column(
                 children: [
@@ -327,18 +363,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: GoogleFonts.inter(
                       fontSize: 42,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
+                      color: scheme.onSurface,
+                      letterSpacing: 1.2,
                     ),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Ready to discuss your next project?',
+                    'Embedded roles, product engineering, or hardware–software integration.',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w400,
-                      color: const Color(0xFF4A5568),
+                      color: scheme.onSurfaceVariant,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 80),
                   isWide
@@ -364,83 +401,54 @@ class _HomeScreenState extends State<HomeScreen> {
             // Final CTA Section
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF667EEA),
-                    Color(0xFF764BA2),
+                    scheme.primary,
+                    scheme.primary.withValues(alpha: 0.82),
                   ],
                 ),
               ),
               padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
               child: Column(
                 children: [
-                  const Icon(Icons.handshake, color: Colors.white, size: 80),
-                  const SizedBox(height: 32),
+                  Icon(Icons.handshake_outlined, color: scheme.onPrimary, size: 72),
+                  const SizedBox(height: 28),
                   Text(
-                    'Ready to Build Something Amazing?',
+                    'Building beats slide decks',
                     style: GoogleFonts.inter(
-                      fontSize: 42,
+                      fontSize: isWide ? 38 : 28,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 1.5,
+                      color: scheme.onPrimary,
+                      letterSpacing: 0.5,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 800),
+                    constraints: const BoxConstraints(maxWidth: 720),
                     child: Text(
-                      "Let's discuss how my diverse skills and passion for innovation can contribute to your next breakthrough project.",
+                      'If you need someone who can own a board bring-up, chase a bus fault, and ship firmware that matches the machine—let\'s talk.',
                       style: GoogleFonts.inter(
-                        fontSize: 20,
+                        fontSize: 17,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: scheme.onPrimary.withValues(alpha: 0.92),
                         height: 1.6,
-                        letterSpacing: 0.3,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 50),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 30,
-                          offset: const Offset(0, 15),
-                        ),
-                      ],
+                  const SizedBox(height: 40),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: scheme.onPrimary,
+                      foregroundColor: scheme.primary,
+                      padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
                     ),
-                    child: ElevatedButton(
-                      onPressed: () => _launchURL('mailto:jobinpthomas1@gmail.com'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.email, size: 24, color: Color(0xFF667EEA)),
-                          const SizedBox(width: 16),
-                          Text(
-                            'Start a Conversation',
-                            style: GoogleFonts.inter(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF667EEA),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
+                    onPressed: () => _launchURL('mailto:jobinpthomas1@gmail.com'),
+                    child: Text(
+                      'Email',
+                      style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800),
                     ),
                   ),
                 ],
@@ -461,10 +469,11 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -498,7 +507,7 @@ class StatCard extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
-                color: const Color(0xFF1A202C),
+                color: scheme.onSurface,
               ),
             ),
           ),
@@ -527,10 +536,11 @@ class ContactSection extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -548,12 +558,12 @@ class ContactSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF667EEA).withValues(alpha: 0.1),
+                  color: scheme.primaryContainer.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.contact_mail,
-                  color: Color(0xFF667EEA),
+                  color: scheme.primary,
                   size: 32,
                 ),
               ),
@@ -563,7 +573,7 @@ class ContactSection extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A202C),
+                  color: scheme.onSurface,
                 ),
               ),
             ],
@@ -605,17 +615,18 @@ class ContactItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: onTap != null ? const Color(0xFFF7FAFC) : Colors.transparent,
+        color: onTap != null ? scheme.surfaceContainerLow : Colors.transparent,
         borderRadius: BorderRadius.circular(16),
-        border: onTap != null ? Border.all(color: const Color(0xFFE2E8F0)) : null,
+        border: onTap != null ? Border.all(color: scheme.outline.withValues(alpha: 0.25)) : null,
       ),
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFF667EEA), size: 24),
+          Icon(icon, color: scheme.primary, size: 24),
           const SizedBox(width: 20),
           Expanded(
             child: Column(
@@ -624,7 +635,7 @@ class ContactItem extends StatelessWidget {
                 Text(
                   label,
                   style: GoogleFonts.inter(
-                    color: const Color(0xFF4A5568),
+                    color: scheme.onSurfaceVariant,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -632,7 +643,7 @@ class ContactItem extends StatelessWidget {
                 Text(
                   value,
                   style: GoogleFonts.inter(
-                    color: const Color(0xFF1A202C),
+                    color: scheme.onSurface,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -643,7 +654,7 @@ class ContactItem extends StatelessWidget {
           if (onTap != null)
             Icon(
               Icons.arrow_forward_ios,
-              color: const Color(0xFF667EEA).withValues(alpha: 0.6),
+              color: scheme.primary.withValues(alpha: 0.6),
               size: 20,
             ),
         ],
@@ -658,10 +669,11 @@ class SocialSection extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(40),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -679,12 +691,12 @@ class SocialSection extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF667EEA).withValues(alpha: 0.1),
+                  color: scheme.primaryContainer.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.share,
-                  color: Color(0xFF667EEA),
+                  color: scheme.primary,
                   size: 32,
                 ),
               ),
@@ -694,7 +706,7 @@ class SocialSection extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A202C),
+                  color: scheme.onSurface,
                 ),
               ),
             ],

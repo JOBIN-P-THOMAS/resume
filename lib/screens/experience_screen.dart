@@ -1,61 +1,119 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ExperienceScreen extends StatelessWidget {
   const ExperienceScreen({super.key});
 
+  Future<void> _mail(BuildContext context) async {
+    final uri = Uri.parse('mailto:jobinpthomas1@gmail.com');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 900;
+    final scheme = Theme.of(context).colorScheme;
+
+    final entries = <_TimelineEntry>[
+      _TimelineEntry(
+        role: 'R&D / Embedded Engineer',
+        company: 'NOSH Robotics',
+        period: '2022 — Present',
+        location: 'Bengaluru, India',
+        summary:
+            'End-to-end product development for a cooking robot: STM32-class firmware, PCB bring-up, custom test equipment, and production support when failures show up on the line—not in the lab.',
+        highlights: [
+          'Hardware + firmware ownership across subsystems; integration with manufacturing and field feedback.',
+          'Plant debugging: PCB issues, harness problems, and process-driven defects traced to root cause.',
+          'Built functional test and harness test systems to improve yield visibility and reduce recurring cost.',
+          'Cross-functional work with mechanical, ops, and supply—same product, shared constraints.',
+        ],
+        tech: ['STM32', 'Renesas', 'ESP32', 'KiCad', 'Fusion 360', 'RTOS', 'CAN / I2C / UART'],
+        icon: Icons.restaurant_outlined,
+        accent: scheme.primary,
+      ),
+      _TimelineEntry(
+        role: 'Product development (freelance)',
+        company: 'Virtual clients',
+        period: '2021 — 2022',
+        location: 'Kerala, India',
+        summary: 'Embedded and connectivity work for clients: lockbox-style products, industrial automation, and Android-side tooling where needed.',
+        highlights: [
+          'Lock box: BLE, RFID, cloud hooks; Arduino → Nordic-class integration path.',
+          'STM32 industrial automation and on-site iteration.',
+        ],
+        tech: ['STM32', 'Atmega', 'ESP32', 'BLE', 'AWS'],
+        icon: Icons.work_outline,
+        accent: const Color(0xFF48BB78),
+      ),
+      _TimelineEntry(
+        role: 'R&D Engineer',
+        company: 'Lamaara Technologies',
+        period: '2019 — 2020',
+        location: 'Kochi, India',
+        summary: 'Water filtration product from POC toward DFM: mechanical + electrical constraints, documentation, and supplier-facing technical clarity.',
+        highlights: [
+          'Cost and manufacturability tradeoffs with cross-functional input.',
+        ],
+        tech: ['DFM', 'Manufacturing', 'Documentation'],
+        icon: Icons.water_drop_outlined,
+        accent: const Color(0xFFED8936),
+      ),
+      _TimelineEntry(
+        role: 'Embedded Engineer · Founder (education focus)',
+        company: 'Infusory Future Tech Labs Pvt. Ltd.',
+        period: '2016 — 2019',
+        location: 'Palai, India',
+        summary: 'Early career: Arduino/ESP bring-up, workshops across colleges, and hands-on teaching that sharpened debugging and communication—useful when production teams need clarity, not jargon.',
+        highlights: [
+          '40+ workshops: embedded, 3D printing, VR/AR robotics.',
+          'Hardware–software integration as a teaching stack, not a slide deck.',
+        ],
+        tech: ['Arduino', 'ESP8266', 'ESP32', 'KiCad', '3D printing'],
+        icon: Icons.school_outlined,
+        accent: const Color(0xFF9F7AEA),
+      ),
+    ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: scheme.surface,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFFF7FAFC),
-                    Color(0xFFEDF2F7),
-                    Color(0xFFE2E8F0),
+                    scheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                    scheme.surface,
                   ],
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 40),
+                padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
                 child: Column(
                   children: [
                     Text(
-                      'Professional Experience',
+                      'Experience',
                       style: GoogleFonts.inter(
-                        fontSize: 64,
+                        fontSize: isWide ? 56 : 40,
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFF1A202C),
-                        letterSpacing: 2,
-                        height: 1.1,
+                        color: scheme.onSurface,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 24),
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 800),
-                      child: Text(
-                        'A journey of continuous growth and innovation across multiple organizations, leading breakthrough projects and mentoring teams.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF4A5568),
-                          height: 1.6,
-                          letterSpacing: 0.3,
-                        ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Roles where “shipping” meant hardware, firmware, and factory reality—not a repo only.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: isWide ? 18 : 16,
+                        color: scheme.onSurfaceVariant,
+                        height: 1.55,
                       ),
                     ),
                   ],
@@ -63,381 +121,83 @@ class ExperienceScreen extends StatelessWidget {
               ),
             ),
 
-            // Current Role Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Current Role',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  _buildExperienceCard(
-                    'R&D Engineer',
-                    'Nosh Robotics',
-                    '2022 - Current',
-                    'Bengaluru, Karnataka, India',
-                    'Core contributor to the Nosh cooking robot\'s mechanical design, embedded firmware, and hardware. Spearheaded 70% of the machine\'s innovations, inventions, and mechanisms.',
-                    [
-                      'Led end-to-end product development from prototyping to continuous manufacturing',
-                      'Established and led R&D team as head & go-to problem solver',
-                      'Designed, coded, and fabricated all testing equipment for each development stage',
-                      'Leveraged STM32, Renesas, ESP32, Arduino, CAD/CAM, and KiCad',
-                    ],
-                    ['STM32', 'Renesas', 'ESP32', 'Fusion 360', 'KiCad', 'Arduino'],
-                    Icons.restaurant,
-                    const Color(0xFF667EEA),
-                  ),
-                ],
-              ),
-            ),
-
-            // Previous Experience Section
-            Container(
-              width: double.infinity,
-              color: const Color(0xFFF7FAFC),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Previous Experience',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  isWide
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: _buildExperienceCard(
-                              'Product Development (Freelance)',
-                              'Virtual Clients',
-                              '2021 - 2022',
-                              'Kerala, India',
-                              'Developed innovative solutions for various clients across different industries.',
-                              [
-                                'Lock box system with Atmega MCU and ESP32 integration',
-                                'Android app for secure data transfer',
-                                'Product reverse engineering and optimization',
-                                'Industrial automation with STM32 control systems',
-                              ],
-                              ['Atmega', 'ESP32', 'Android', 'STM32', 'IoT'],
-                              Icons.work,
-                              const Color(0xFF48BB78),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildExperienceCard(
-                              'R&D Engineer',
-                              'Lamaara Technologies',
-                              '2019 - 2020',
-                              'Kochi, India',
-                              'Led water filter development from POC to DFM readiness.',
-                              [
-                                'Product development from concept to manufacturing',
-                                'DFM optimization and cost reduction',
-                                'Technical documentation and specifications',
-                                'Cross-functional team collaboration',
-                              ],
-                              ['Product Development', 'DFM', 'Manufacturing', 'Documentation'],
-                              Icons.water_drop,
-                              const Color(0xFFED8936),
-                            )),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            _buildExperienceCard(
-                              'Product Development (Freelance)',
-                              'Virtual Clients',
-                              '2021 - 2022',
-                              'Kerala, India',
-                              'Developed innovative solutions for various clients across different industries.',
-                              [
-                                'Lock box system with Atmega MCU and ESP32 integration',
-                                'Android app for secure data transfer',
-                                'Product reverse engineering and optimization',
-                                'Industrial automation with STM32 control systems',
-                              ],
-                              ['Atmega', 'ESP32', 'Android', 'STM32', 'IoT'],
-                              Icons.work,
-                              const Color(0xFF48BB78),
-                            ),
-                            const SizedBox(height: 40),
-                            _buildExperienceCard(
-                              'R&D Engineer',
-                              'Lamaara Technologies',
-                              '2019 - 2020',
-                              'Kochi, India',
-                              'Led water filter development from POC to DFM readiness.',
-                              [
-                                'Product development from concept to manufacturing',
-                                'DFM optimization and cost reduction',
-                                'Technical documentation and specifications',
-                                'Cross-functional team collaboration',
-                              ],
-                              ['Product Development', 'DFM', 'Manufacturing', 'Documentation'],
-                              Icons.water_drop,
-                              const Color(0xFFED8936),
-                            ),
-                          ],
-                        ),
-                ],
-              ),
-            ),
-
-            // Early Career Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Early Career',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  _buildExperienceCard(
-                    'Embedded Engineer',
-                    'Infusory Future Tech Labs Pvt. Ltd.',
-                    '2016 - 2019',
-                    'Palai, India',
-                    'Began career in embedded systems and founded company focused on student education.',
-                    [
-                      'Started with Arduino, ESP8266, ESP32 during college',
-                      'Founded company focused on student education',
-                      'Conducted workshops in 3D printing, VR & AR robotics',
-                      'Taught embedded hardware-software integration across 40+ colleges',
-                    ],
-                    ['Arduino', 'ESP8266', 'ESP32', 'KiCad', '3D Printing', 'VR/AR'],
-                    Icons.school,
-                    const Color(0xFF9F7AEA),
-                  ),
-                ],
-              ),
-            ),
-
-            // Key Achievements Section
-            Container(
-              width: double.infinity,
-              color: const Color(0xFFF7FAFC),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Key Achievements',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisSpacing: 40,
-                    mainAxisSpacing: 40,
-                    crossAxisCount: isWide ? 3 : 2,
-                    physics: NeverScrollableScrollPhysics(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: isWide ? 48 : 20, vertical: 24),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 920),
+                  child: Column(
                     children: [
-                      _buildAchievementCard(
-                        '70% Innovation Rate',
-                        'Led majority of innovations at Nosh Robotics',
-                        Icons.lightbulb,
-                        const Color(0xFF667EEA),
-                      ),
-                      _buildAchievementCard(
-                        '40+ Colleges',
-                        'Conducted workshops and training programs',
-                        Icons.school,
-                        const Color(0xFF48BB78),
-                      ),
-                      _buildAchievementCard(
-                        '100+ Projects',
-                        'Completed across multiple domains',
-                        Icons.rocket_launch,
-                        const Color(0xFFED8936),
-                      ),
+                      for (var i = 0; i < entries.length; i++)
+                        _TimelineTile(
+                          entry: entries[i],
+                          isLast: i == entries.length - 1,
+                          index: i,
+                        ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
 
-            // Skills Summary Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Skills Summary',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  isWide
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: _buildSkillsCategory(
-                              'Hardware & Embedded',
-                              ['STM32', 'ATMEGA', 'ESP32', 'Renesas', 'Arduino', 'KiCad'],
-                              Icons.memory,
-                              const Color(0xFF667EEA),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildSkillsCategory(
-                              'Software & Development',
-                              ['Dart', 'Flutter', 'C/C++', 'Python', 'AWS', 'Firebase'],
-                              Icons.code,
-                              const Color(0xFF48BB78),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildSkillsCategory(
-                              'Design & Manufacturing',
-                              ['Fusion 360', 'CAD/CAM', '3D Printing', 'CNC', 'Prototyping'],
-                              Icons.build,
-                              const Color(0xFFED8936),
-                            )),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            _buildSkillsCategory(
-                              'Hardware & Embedded',
-                              ['STM32', 'ATMEGA', 'ESP32', 'Renesas', 'Arduino', 'KiCad'],
-                              Icons.memory,
-                              const Color(0xFF667EEA),
-                            ),
-                            const SizedBox(height: 40),
-                            _buildSkillsCategory(
-                              'Software & Development',
-                              ['Dart', 'Flutter', 'C/C++', 'Python', 'AWS', 'Firebase'],
-                              Icons.code,
-                              const Color(0xFF48BB78),
-                            ),
-                            const SizedBox(height: 40),
-                            _buildSkillsCategory(
-                              'Design & Manufacturing',
-                              ['Fusion 360', 'CAD/CAM', '3D Printing', 'CNC', 'Prototyping'],
-                              Icons.build,
-                              const Color(0xFFED8936),
-                            ),
-                          ],
-                        ),
-                ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(40, 24, 40, 48),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    _miniStat(context, 'Production focus', 'Plant debug & test rigs', Icons.factory_outlined),
+                    _miniStat(context, 'Stack', 'STM32 · RTOS · PCB', Icons.layers_outlined),
+                    _miniStat(context, 'Also', 'Flutter device UI', Icons.phone_android_outlined),
+                  ],
+                ),
               ),
             ),
 
-            // Call to Action Section
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF667EEA),
-                    Color(0xFF764BA2),
+                    scheme.primary,
+                    scheme.primary.withValues(alpha: 0.88),
                   ],
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
               child: Column(
                 children: [
-                  const Icon(Icons.work_history, color: Colors.white, size: 80),
-                  const SizedBox(height: 32),
                   Text(
-                    'Ready to Leverage My Experience?',
+                    'Discuss a role',
                     style: GoogleFonts.inter(
-                      fontSize: 42,
+                      fontSize: 28,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 1.5,
+                      color: scheme.onPrimary,
                     ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Embedded systems, product engineering, or hardware–software integration.',
                     textAlign: TextAlign.center,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      color: scheme.onPrimary.withValues(alpha: 0.9),
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  Container(
-                    constraints: const BoxConstraints(maxWidth: 800),
+                  const SizedBox(height: 28),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: scheme.onPrimary,
+                      foregroundColor: scheme.primary,
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    ),
+                    onPressed: () => _mail(context),
                     child: Text(
-                      'Let\'s discuss how my diverse experience in R&D, embedded systems, and product development can contribute to your organization\'s success.',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
-                        height: 1.6,
-                        letterSpacing: 0.3,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 30,
-                          offset: const Offset(0, 15),
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.email, size: 24, color: Color(0xFF667EEA)),
-                          const SizedBox(width: 16),
-                          Text(
-                            'Start a Conversation',
-                            style: GoogleFonts.inter(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: const Color(0xFF667EEA),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
+                      'Email Jobin',
+                      style: GoogleFonts.inter(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],
@@ -449,288 +209,215 @@ class ExperienceScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildExperienceCard(String title, String company, String period, String location, String description, List<String> achievements, List<String> technologies, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+  Widget _miniStat(BuildContext context, String title, String sub, IconData icon) {
+    final scheme = Theme.of(context).colorScheme;
+    return SizedBox(
+      width: 260,
+      child: Material(
+        color: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Icon(icon, color: color, size: 32),
-              ),
-              const SizedBox(width: 24),
+              Icon(icon, color: scheme.primary),
+              const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1A202C),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      company,
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: color,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.schedule, color: const Color(0xFF4A5568), size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          period,
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF4A5568),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Icon(Icons.location_on, color: const Color(0xFF4A5568), size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          location,
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF4A5568),
-                          ),
-                        ),
-                      ],
-                    ),
+                    Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14)),
+                    Text(sub, style: GoogleFonts.inter(fontSize: 12, color: scheme.onSurfaceVariant)),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          Text(
-            description,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF4A5568),
-              height: 1.6,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Key Achievements:',
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF1A202C),
-            ),
-          ),
-          const SizedBox(height: 16),
-          ...achievements.map((achievement) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.only(top: 8),
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    achievement,
-                    style: GoogleFonts.inter(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF4A5568),
-                      height: 1.5,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )),
-          const SizedBox(height: 24),
-          Text(
-            'Technologies:',
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF1A202C),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: technologies.map((tech) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: color.withValues(alpha: 0.2)),
-              ),
-              child: Text(
-                tech,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: color,
-                ),
-              ),
-            )).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAchievementCard(String title, String description, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
         ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            description,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF4A5568),
-              height: 1.6,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSkillsCategory(String title, List<String> skills, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          ...skills.map((skill) => Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withValues(alpha: 0.2)),
-            ),
-            child: Text(
-              skill,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: color,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          )),
-        ],
       ),
     );
   }
 }
 
+class _TimelineEntry {
+  final String role;
+  final String company;
+  final String period;
+  final String location;
+  final String summary;
+  final List<String> highlights;
+  final List<String> tech;
+  final IconData icon;
+  final Color accent;
+
+  const _TimelineEntry({
+    required this.role,
+    required this.company,
+    required this.period,
+    required this.location,
+    required this.summary,
+    required this.highlights,
+    required this.tech,
+    required this.icon,
+    required this.accent,
+  });
+}
+
+class _TimelineTile extends StatelessWidget {
+  final _TimelineEntry entry;
+  final bool isLast;
+  final int index;
+
+  const _TimelineTile({
+    required this.entry,
+    required this.isLast,
+    required this.index,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 36,
+          child: Column(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: entry.accent.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: entry.accent.withValues(alpha: 0.45)),
+                ),
+                child: Icon(entry.icon, size: 18, color: entry.accent),
+              ),
+              if (!isLast)
+                Container(
+                  width: 2,
+                  height: 48,
+                  margin: const EdgeInsets.symmetric(vertical: 6),
+                  color: scheme.outline.withValues(alpha: 0.35),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 18),
+        Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 36),
+              child: Material(
+                color: scheme.surface,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: entry.accent.withValues(alpha: 0.2)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        entry.role,
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: scheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        entry.company,
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: entry.accent,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.schedule, size: 16, color: scheme.onSurfaceVariant),
+                          const SizedBox(width: 6),
+                          Text(
+                            entry.period,
+                            style: GoogleFonts.inter(fontSize: 14, color: scheme.onSurfaceVariant),
+                          ),
+                          const SizedBox(width: 16),
+                          Icon(Icons.place_outlined, size: 16, color: scheme.onSurfaceVariant),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              entry.location,
+                              style: GoogleFonts.inter(fontSize: 14, color: scheme.onSurfaceVariant),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        entry.summary,
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          height: 1.55,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      ...entry.highlights.map(
+                        (h) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 7),
+                                child: Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(color: entry.accent, shape: BoxShape.circle),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  h,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    height: 1.5,
+                                    color: scheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: entry.tech
+                            .map(
+                              (t) => Chip(
+                                label: Text(t, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600)),
+                                backgroundColor: entry.accent.withValues(alpha: 0.1),
+                                side: BorderSide(color: entry.accent.withValues(alpha: 0.25)),
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    ).animate().fadeIn(duration: 400.ms, delay: (60 * index).ms).slideX(begin: 0.02);
+  }
+}

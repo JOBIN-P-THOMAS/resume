@@ -1,60 +1,121 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
 
+  static final List<_SkillCategory> _categories = [
+    _SkillCategory(
+      title: 'Embedded systems',
+      icon: Icons.memory_outlined,
+      accent: Color(0xFF667EEA),
+      items: [
+        'STM32 (F103, F411) — bare metal & HAL',
+        'Interrupts, timers, DMA',
+        'RTOS (tasks, synchronization, motor-control logic)',
+      ],
+    ),
+    _SkillCategory(
+      title: 'Hardware design',
+      icon: Icons.developer_board_outlined,
+      accent: Color(0xFF48BB78),
+      items: [
+        'PCB design, bring-up, rework',
+        'EMI/EMC awareness — filtering, ferrite beads, layout discipline',
+        'Bucks, decoupling, grounding strategies',
+        'Signal integrity: I2C / UART issues under real loading',
+      ],
+    ),
+    _SkillCategory(
+      title: 'Communication protocols',
+      icon: Icons.hub_outlined,
+      accent: Color(0xFFED8936),
+      items: [
+        'I2C — buffers, level shifters, bus faults',
+        'UART',
+        'CAN',
+      ],
+    ),
+    _SkillCategory(
+      title: 'Control systems',
+      icon: Icons.tune_outlined,
+      accent: Color(0xFF9F7AEA),
+      items: [
+        'PID motor control',
+        'Encoder-based positioning',
+        'Multi-motor coordination',
+      ],
+    ),
+    _SkillCategory(
+      title: 'Software & tools',
+      icon: Icons.terminal_outlined,
+      accent: Color(0xFF38B2AC),
+      items: [
+        'Keil, STM32CubeIDE, ESP-IDF',
+        'Flutter — admin dashboards, device UI & connectivity',
+        'Debug: scope, logic analyzer, structured logging',
+      ],
+    ),
+    _SkillCategory(
+      title: 'Prototyping',
+      icon: Icons.build_circle_outlined,
+      accent: Color(0xFFF56565),
+      items: [
+        '3D printing — multiple machines, tooling, iteration',
+        'CNC — machine build in progress',
+        'Rapid mechanical + electrical iteration',
+      ],
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 900;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: scheme.surface,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFFF7FAFC),
-                    Color(0xFFEDF2F7),
-                    Color(0xFFE2E8F0),
+                    scheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                    scheme.surface,
                   ],
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 40),
+                padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
                 child: Column(
                   children: [
                     Text(
-                      'Skills & Expertise',
+                      'Skills',
                       style: GoogleFonts.inter(
-                        fontSize: 64,
+                        fontSize: isWide ? 56 : 40,
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFF1A202C),
-                        letterSpacing: 2,
-                        height: 1.1,
+                        color: scheme.onSurface,
+                        letterSpacing: 1.2,
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 24),
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 800),
+                    const SizedBox(height: 20),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
                       child: Text(
-                        'A comprehensive skill set developed through hands-on experience across multiple domains and technologies.',
+                        'Structured the way hiring managers scan embedded roles: firmware, hardware, protocols, control, tools, and shop-floor iteration.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
-                          fontSize: 22,
+                          fontSize: isWide ? 19 : 16,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF4A5568),
+                          color: scheme.onSurfaceVariant,
                           height: 1.6,
-                          letterSpacing: 0.3,
                         ),
                       ),
                     ),
@@ -63,291 +124,62 @@ class SkillsScreen extends StatelessWidget {
               ),
             ),
 
-            // Core Skills Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Core Skills',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisSpacing: 40,
-                    mainAxisSpacing: 40,
-                    crossAxisCount: isWide ? 3 : 2,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      _buildSkillCard(
-                        'Embedded C & Firmware',
-                        'STM32, ATMEGA, ESP, Renesas',
-                        Icons.memory,
-                        const Color(0xFF667EEA),
-                      ),
-                      _buildSkillCard(
-                        'CAD, CAM & Analysis',
-                        'Fusion 360, DFM, DFA',
-                        Icons.design_services,
-                        const Color(0xFF48BB78),
-                      ),
-                      _buildSkillCard(
-                        'Sheet Metal Design',
-                        'Prototyping & Manufacturing',
-                        Icons.build,
-                        const Color(0xFFED8936),
-                      ),
-                      _buildSkillCard(
-                        'PCB Design',
-                        'KiCad, Circuit Design',
-                        Icons.memory,
-                        const Color(0xFF9F7AEA),
-                      ),
-                      _buildSkillCard(
-                        'Problem Solving',
-                        'Debugging & Optimization',
-                        Icons.psychology,
-                        const Color(0xFFF6AD55),
-                      ),
-                      _buildSkillCard(
-                        'Project Management',
-                        'End-to-End Development',
-                        Icons.rocket_launch,
-                        const Color(0xFF68D391),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // Technical Proficiency Section
-            Container(
-              width: double.infinity,
-              color: const Color(0xFFF7FAFC),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Technical Proficiency',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  isWide
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: _buildTechSkillCard(
-                              'Embedded Systems',
-                              ['STM32', 'ATMEGA', 'ESP32', 'Renesas', 'Arduino'],
-                              Icons.memory,
-                              const Color(0xFF667EEA),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildTechSkillCard(
-                              'Software Development',
-                              ['Dart', 'Flutter', 'C/C++', 'Python', 'AWS'],
-                              Icons.code,
-                              const Color(0xFF48BB78),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildTechSkillCard(
-                              'Design & Manufacturing',
-                              ['Fusion 360', 'KiCad', '3D Printing', 'CNC', 'Prototyping'],
-                              Icons.architecture,
-                              const Color(0xFFED8936),
-                            )),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            _buildTechSkillCard(
-                              'Embedded Systems',
-                              ['STM32', 'ATMEGA', 'ESP32', 'Renesas', 'Arduino'],
-                              Icons.memory,
-                              const Color(0xFF667EEA),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: isWide ? 48 : 20, vertical: 32),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1100),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final maxW = constraints.maxWidth;
+                      final useTwo = maxW > 720;
+                      final gap = 22.0;
+                      final cardW = useTwo ? (maxW - gap) / 2 : maxW;
+                      return Wrap(
+                        spacing: gap,
+                        runSpacing: gap,
+                        children: [
+                          for (var i = 0; i < _categories.length; i++)
+                            SizedBox(
+                              width: cardW,
+                              child: _CategoryCard(category: _categories[i], index: i),
                             ),
-                            const SizedBox(height: 40),
-                            _buildTechSkillCard(
-                              'Software Development',
-                              ['Dart', 'Flutter', 'C/C++', 'Python', 'AWS'],
-                              Icons.code,
-                              const Color(0xFF48BB78),
-                            ),
-                            const SizedBox(height: 40),
-                            _buildTechSkillCard(
-                              'Design & Manufacturing',
-                              ['Fusion 360', 'KiCad', '3D Printing', 'CNC', 'Prototyping'],
-                              Icons.architecture,
-                              const Color(0xFFED8936),
-                            ),
-                          ],
-                        ),
-                ],
-              ),
-            ),
-
-            // Additional Skills Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Additional Skills',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
+                        ],
+                      );
+                    },
                   ),
-                  const SizedBox(height: 80),
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisSpacing: 40,
-                    mainAxisSpacing: 40,
-                    crossAxisCount: isWide ? 4 : 2,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      _buildAdditionalSkillsCard('Workshop Training', '40+ Colleges', Icons.school, const Color(0xFF9F7AEA)),
-                      _buildAdditionalSkillsCard('Product Development', 'End-to-End', Icons.rocket_launch, const Color(0xFFF6AD55)),
-                      _buildAdditionalSkillsCard('Team Leadership', 'R&D Head', Icons.group, const Color(0xFF68D391)),
-                      _buildAdditionalSkillsCard('Innovation Rate', '70% Success', Icons.lightbulb, const Color(0xFF667EEA)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            // Skills Overview Section
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF667EEA),
-                    Color(0xFF764BA2),
-                  ],
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                children: [
-                  const Icon(Icons.analytics, color: Colors.white, size: 80),
-                  const SizedBox(height: 32),
-                  Text(
-                    'Skills Overview',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    constraints: const BoxConstraints(maxWidth: 800),
-                    child: Text(
-                      'My diverse skill set spans hardware, software, and mechanical engineering, enabling me to tackle complex multidisciplinary challenges and drive innovation across multiple domains.',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
-                        height: 1.6,
-                        letterSpacing: 0.3,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 30,
-                          offset: const Offset(0, 15),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(40, 0, 40, 96),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Material(
+                  color: scheme.primaryContainer.withValues(alpha: 0.35),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(28),
+                    child: Row(
+                      children: [
+                        Icon(Icons.integration_instructions_outlined, color: scheme.primary, size: 36),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Text(
+                            'Breadth is only useful with depth: I can discuss a PID loop, a buck layout, and a Flutter service architecture—because the same product needed all three.',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              height: 1.55,
+                              color: scheme.onSurface,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF667EEA),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              'Hardware',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              'Software',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF667EEA),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              'Mechanical',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF667EEA),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -355,172 +187,105 @@ class SkillsScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSkillCard(String title, String subtitle, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            subtitle,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: color,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+class _SkillCategory {
+  final String title;
+  final IconData icon;
+  final Color accent;
+  final List<String> items;
 
-  Widget _buildTechSkillCard(String title, List<String> skills, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
-        ),
+  const _SkillCategory({
+    required this.title,
+    required this.icon,
+    required this.accent,
+    required this.items,
+  });
+}
+
+class _CategoryCard extends StatelessWidget {
+  final _SkillCategory category;
+  final int index;
+
+  const _CategoryCard({required this.category, required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surface,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: category.accent.withValues(alpha: 0.22)),
       ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.all(22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: category.accent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(category.icon, color: category.accent, size: 24),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    category.title,
+                    style: GoogleFonts.inter(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          ...skills.map((skill) => Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withValues(alpha: 0.2)),
-            ),
-            child: Text(
-              skill,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: color,
+            const SizedBox(height: 16),
+            ...category.items.map(
+              (line) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Container(
+                        width: 5,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: category.accent,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        line,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          height: 1.45,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
-          )),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdditionalSkillsCard(String title, String subtitle, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
-          ),
-        ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
+          ],
         ),
       ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            subtitle,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
+    )
+        .animate()
+        .fadeIn(duration: 400.ms, delay: (45 * index).ms)
+        .slideY(begin: 0.03, curve: Curves.easeOutCubic);
   }
 }

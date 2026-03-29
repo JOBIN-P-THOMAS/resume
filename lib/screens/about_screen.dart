@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -8,53 +8,51 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 900;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: scheme.surface,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Hero Section
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFFF7FAFC),
-                    Color(0xFFEDF2F7),
-                    Color(0xFFE2E8F0),
+                    scheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                    scheme.surface,
                   ],
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 120, horizontal: 40),
+                padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
                 child: Column(
                   children: [
                     Text(
-                      'About Me',
+                      'About',
                       style: GoogleFonts.inter(
-                        fontSize: 64,
+                        fontSize: isWide ? 56 : 40,
                         fontWeight: FontWeight.w900,
-                        color: const Color(0xFF1A202C),
-                        letterSpacing: 2,
+                        color: scheme.onSurface,
+                        letterSpacing: 1.2,
                         height: 1.1,
                       ),
                       textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    Container(
-                      constraints: const BoxConstraints(maxWidth: 800),
+                    ).animate().fadeIn(duration: 450.ms),
+                    const SizedBox(height: 20),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
                       child: Text(
-                        'A passionate R&D engineer with a lifelong commitment to innovation and problem-solving through technology.',
+                        'I did not start as a “software developer.” I started as someone who took things apart, built replacements, and learned why failures happen on real hardware.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
-                          fontSize: 22,
+                          fontSize: isWide ? 20 : 17,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF4A5568),
-                          height: 1.6,
-                          letterSpacing: 0.3,
+                          color: scheme.onSurfaceVariant,
+                          height: 1.65,
                         ),
                       ),
                     ),
@@ -63,70 +61,98 @@ class AboutScreen extends StatelessWidget {
               ),
             ),
 
-            // Personal Journey Section
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 72, horizontal: 40),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Text(
+                  'Today I work where firmware, PCBs, mechanics, and manufacturing meet. The interesting problems are rarely “write more code.” They are timing, grounding, noise, tolerance stack-up, supplier variation, and bugs that only appear when the line is running. I am comfortable owning that end-to-end: prototype, validate, support production, and debug like an engineer who has shipped—not like someone who only simulated.',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: isWide ? 18 : 16,
+                    height: 1.75,
+                    color: scheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+
+            // Journey
             Container(
               width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
+              color: scheme.surfaceContainerLow.withValues(alpha: 0.25),
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'My Journey',
+                    'The arc',
                     style: GoogleFonts.inter(
-                      fontSize: 42,
+                      fontSize: 36,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
+                      color: scheme.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 48),
                   isWide
                       ? Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(child: _buildJourneyCard(
-                              'Early Passion',
-                              'From age 7, I discovered my love for technology and began building projects. This early start gave me a unique foundation in hands-on problem-solving.',
-                              Icons.child_care,
-                              const Color(0xFF667EEA),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildJourneyCard(
-                              'Academic Foundation',
-                              'Completed B.Tech in EEE from Priest University, building a strong theoretical and practical foundation in electrical and electronics engineering.',
-                              Icons.school,
-                              const Color(0xFF48BB78),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildJourneyCard(
-                              'Professional Growth',
-                              'Progressed from embedded engineer to R&D engineer, leading innovative projects and mentoring teams across multiple organizations.',
-                              Icons.work,
-                              const Color(0xFFED8936),
-                            )),
+                            Expanded(
+                              child: _journeyCard(
+                                context,
+                                'Tinkering',
+                                'Building early: printers, boards, mechanisms. Learning by failure modes—shorts, bad grounds, wrong assumptions—before the failures cost a line.',
+                                Icons.handyman_outlined,
+                                scheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 28),
+                            Expanded(
+                              child: _journeyCard(
+                                context,
+                                'Engineering discipline',
+                                'B.Tech EEE foundation, then embedded work that forced rigor: bring-up, protocols, debugging with scopes and logic—not guesswork.',
+                                Icons.memory_outlined,
+                                const Color(0xFF48BB78),
+                              ),
+                            ),
+                            const SizedBox(width: 28),
+                            Expanded(
+                              child: _journeyCard(
+                                context,
+                                'Product development',
+                                'NOSH Robotics and client work: full lifecycle from idea to units in the field—hardware, firmware, test rigs, and plant support when reality disagrees with the schematic.',
+                                Icons.precision_manufacturing_outlined,
+                                const Color(0xFFED8936),
+                              ),
+                            ),
                           ],
                         )
                       : Column(
                           children: [
-                            _buildJourneyCard(
-                              'Early Passion',
-                              'From age 7, I discovered my love for technology and began building projects. This early start gave me a unique foundation in hands-on problem-solving.',
-                              Icons.child_care,
-                              const Color(0xFF667EEA),
+                            _journeyCard(
+                              context,
+                              'Tinkering',
+                              'Building early: printers, boards, mechanisms. Learning by failure modes before the failures cost a line.',
+                              Icons.handyman_outlined,
+                              scheme.primary,
                             ),
-                            const SizedBox(height: 40),
-                            _buildJourneyCard(
-                              'Academic Foundation',
-                              'Completed B.Tech in EEE from Priest University, building a strong theoretical and practical foundation in electrical and electronics engineering.',
-                              Icons.school,
+                            const SizedBox(height: 28),
+                            _journeyCard(
+                              context,
+                              'Engineering discipline',
+                              'EEE foundation, then embedded work: bring-up, protocols, scopes and logic analyzers—not guesswork.',
+                              Icons.memory_outlined,
                               const Color(0xFF48BB78),
                             ),
-                            const SizedBox(height: 40),
-                            _buildJourneyCard(
-                              'Professional Growth',
-                              'Progressed from embedded engineer to R&D engineer, leading innovative projects and mentoring teams across multiple organizations.',
-                              Icons.work,
+                            const SizedBox(height: 28),
+                            _journeyCard(
+                              context,
+                              'Product development',
+                              'Lifecycle work: hardware, firmware, test rigs, plant support when reality disagrees with the schematic.',
+                              Icons.precision_manufacturing_outlined,
                               const Color(0xFFED8936),
                             ),
                           ],
@@ -135,277 +161,240 @@ class AboutScreen extends StatelessWidget {
               ),
             ),
 
-            // Education Section
+            // Engineering depth
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+              child: Column(
+                children: [
+                  Text(
+                    'Engineering depth',
+                    style: GoogleFonts.inter(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Short notes on things that separate a bench demo from a shippable product.',
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 880),
+                    child: Column(
+                      children: [
+                        _depthRow(
+                          context,
+                          'Decoupling capacitors',
+                          'They are not optional decoration. Digital edges pull fast current; without local charge storage and a low-inductance return path, you get ground bounce and “mystery” resets.',
+                        ),
+                        _depthRow(
+                          context,
+                          'π filters after bucks',
+                          'Switching converters generate ripple and HF content. LC/π filtering plus placement discipline keeps that energy out of sensitive analog and RF sections.',
+                        ),
+                        _depthRow(
+                          context,
+                          'I2C pull-up tradeoffs',
+                          'Stronger pull-ups improve rise time on long buses; weaker ones reduce power. Capacitive loading and bus length decide whether you need buffers or a slower clock—not a single “correct” value.',
+                        ),
+                        _depthRow(
+                          context,
+                          'Real debugging',
+                          'When a bus glitches intermittently, I look at grounds first, then ringing/overshoot, then firmware timeouts. Many “software bugs” are signal integrity with a software symptom.',
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Maker section
             Container(
               width: double.infinity,
-              color: const Color(0xFFF7FAFC),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
+              color: scheme.surfaceContainerLow.withValues(alpha: 0.2),
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'What I build (maker)',
+                    style: GoogleFonts.inter(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Personal shop + experiments—same mindset as work: iterate fast, measure, fix the failure mode.',
+                    style: GoogleFonts.inter(fontSize: 16, color: scheme.onSurfaceVariant),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  isWide
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: _makerCard(
+                                context,
+                                Icons.print_outlined,
+                                '3D printers',
+                                'Multiple machines—used daily for brackets, tooling, and quick mechanical iteration.',
+                                scheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: _makerCard(
+                                context,
+                                Icons.carpenter_outlined,
+                                'CNC',
+                                'Machine build in progress: moving from printed parts to subtractive workflows for stiffer structures.',
+                                const Color(0xFF48BB78),
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: _makerCard(
+                                context,
+                                Icons.breakfast_dining_outlined,
+                                'Experiments',
+                                'Side projects like a Meduvada machine concept—food automation is unforgiving: timing, heat, and mess teach constraints textbooks skip.',
+                                const Color(0xFFED8936),
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            _makerCard(
+                              context,
+                              Icons.print_outlined,
+                              '3D printers',
+                              'Multiple machines for brackets, tooling, and fast iteration.',
+                              scheme.primary,
+                            ),
+                            const SizedBox(height: 24),
+                            _makerCard(
+                              context,
+                              Icons.carpenter_outlined,
+                              'CNC',
+                              'Build in progress for stiffer structures than print-only setups.',
+                              const Color(0xFF48BB78),
+                            ),
+                            const SizedBox(height: 24),
+                            _makerCard(
+                              context,
+                              Icons.breakfast_dining_outlined,
+                              'Experiments',
+                              'Concepts like a Meduvada machine—heat, timing, and mess as design constraints.',
+                              const Color(0xFFED8936),
+                            ),
+                          ],
+                        ),
+                ],
+              ),
+            ),
+
+            // Education
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+              child: Column(
                 children: [
                   Text(
                     'Education',
                     style: GoogleFonts.inter(
-                      fontSize: 42,
+                      fontSize: 36,
                       fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
+                      color: scheme.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 80),
-                  Container(
+                  const SizedBox(height: 40),
+                  ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 600),
-                    padding: const EdgeInsets.all(40),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
+                    child: Material(
+                      color: scheme.surfaceContainerHighest.withValues(alpha: 0.35),
                       borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 30,
-                          offset: const Offset(0, 15),
+                      child: Padding(
+                        padding: const EdgeInsets.all(36),
+                        child: Column(
+                          children: [
+                            Icon(Icons.school_outlined, color: scheme.primary, size: 40),
+                            const SizedBox(height: 20),
+                            Text(
+                              'B.Tech — Electrical & Electronics Engineering',
+                              style: GoogleFonts.inter(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                color: scheme.onSurface,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Priest University · 2015–2019',
+                              style: GoogleFonts.inter(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                                color: scheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Credit transfer from APJ Abdul Kalam Technological University',
+                              style: GoogleFonts.inter(fontSize: 14, color: scheme.onSurfaceVariant),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF667EEA).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            Icons.school,
-                            color: Color(0xFF667EEA),
-                            size: 40,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                                                 Text(
-                           'B.Tech in Electrical & Electronics Engineering',
-                           style: GoogleFonts.inter(
-                             fontSize: 24,
-                             fontWeight: FontWeight.w700,
-                             color: const Color(0xFF1A202C),
-                           ),
-                           textAlign: TextAlign.center,
-                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Priest University',
-                          style: GoogleFonts.inter(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF667EEA),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '2015 - 2019',
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF4A5568),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                                                 Text(
-                           'Credit Transfer from APJ Abdul Kalam Technological University',
-                           style: GoogleFonts.inter(
-                             fontSize: 14,
-                             fontWeight: FontWeight.w400,
-                             color: const Color(0xFF718096),
-                           ),
-                           textAlign: TextAlign.center,
-                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
 
-            // Core Philosophy Section
             Container(
               width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Core Philosophy',
-                    style: GoogleFonts.inter(
-                      fontSize: 42,
-                      fontWeight: FontWeight.w800,
-                      color: const Color(0xFF1A202C),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 80),
-                  isWide
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: _buildPhilosophyCard(
-                              'Innovation First',
-                              'I believe in pushing boundaries and creating solutions that don\'t just solve problems, but revolutionize how we approach them.',
-                              Icons.lightbulb,
-                              const Color(0xFF9F7AEA),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildPhilosophyCard(
-                              'Hands-on Learning',
-                              'True mastery comes from building, testing, and iterating. I learn by doing and encourage others to do the same.',
-                              Icons.build,
-                              const Color(0xFFF6AD55),
-                            )),
-                            const SizedBox(width: 40),
-                            Expanded(child: _buildPhilosophyCard(
-                              'Collaborative Growth',
-                              'The best innovations come from diverse perspectives. I thrive in collaborative environments where knowledge sharing drives progress.',
-                              Icons.group,
-                              const Color(0xFF68D391),
-                            )),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            _buildPhilosophyCard(
-                              'Innovation First',
-                              'I believe in pushing boundaries and creating solutions that don\'t just solve problems, but revolutionize how we approach them.',
-                              Icons.lightbulb,
-                              const Color(0xFF9F7AEA),
-                            ),
-                            const SizedBox(height: 40),
-                            _buildPhilosophyCard(
-                              'Hands-on Learning',
-                              'True mastery comes from building, testing, and iterating. I learn by doing and encourage others to do the same.',
-                              Icons.build,
-                              const Color(0xFFF6AD55),
-                            ),
-                            const SizedBox(height: 40),
-                            _buildPhilosophyCard(
-                              'Collaborative Growth',
-                              'The best innovations come from diverse perspectives. I thrive in collaborative environments where knowledge sharing drives progress.',
-                              Icons.group,
-                              const Color(0xFF68D391),
-                            ),
-                          ],
-                        ),
-                ],
-              ),
-            ),
-
-            // Career Goals Section
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.symmetric(vertical: 72, horizontal: 40),
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF667EEA),
-                    Color(0xFF764BA2),
+                    scheme.primary,
+                    scheme.primary.withValues(alpha: 0.88),
                   ],
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 40),
               child: Column(
                 children: [
-                  const Icon(Icons.flag, color: Colors.white, size: 80),
-                  const SizedBox(height: 32),
                   Text(
-                    'Career Goals',
+                    'If your team ships physical products',
                     style: GoogleFonts.inter(
-                      fontSize: 42,
+                      fontSize: isWide ? 30 : 24,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                      letterSpacing: 1.5,
+                      color: scheme.onPrimary,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
-                  Container(
-                    constraints: const BoxConstraints(maxWidth: 800),
+                  const SizedBox(height: 16),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
                     child: Text(
-                      'I aspire to lead breakthrough innovations in robotics and automation, mentor the next generation of engineers, and contribute to technologies that make a meaningful impact on society.',
+                      'I am most useful when firmware, PCB, and factory reality are treated as one system. I prefer direct technical depth over generic “innovation” language.',
                       style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white.withValues(alpha: 0.9),
+                        fontSize: 17,
                         height: 1.6,
-                        letterSpacing: 0.3,
+                        color: scheme.onPrimary.withValues(alpha: 0.92),
                       ),
                       textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 30,
-                          offset: const Offset(0, 15),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF667EEA),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              'Innovation Leadership',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              'Mentorship',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF667EEA),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Text(
-                              'Social Impact',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF667EEA),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
                 ],
@@ -417,52 +406,55 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildJourneyCard(String title, String description, IconData icon, Color color) {
+  Widget _journeyCard(
+    BuildContext context,
+    String title,
+    String body,
+    IconData icon,
+    Color accent,
+  ) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: accent.withValues(alpha: 0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
           ),
         ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
-        ),
       ),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+              color: accent.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: color, size: 32),
+            child: Icon(icon, color: accent, size: 28),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           Text(
             title,
             style: GoogleFonts.inter(
               fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              fontWeight: FontWeight.w800,
+              color: scheme.onSurface,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Text(
-            description,
+            body,
             style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF4A5568),
+              fontSize: 15,
               height: 1.6,
+              color: scheme.onSurfaceVariant,
             ),
             textAlign: TextAlign.center,
           ),
@@ -471,54 +463,80 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPhilosophyCard(String title, String description, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
+  Widget _depthRow(BuildContext context, String title, String body) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.check_circle_outline, color: scheme.primary, size: 22),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: scheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  body,
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    height: 1.55,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-        border: Border.all(
-          color: color.withValues(alpha: 0.1),
-          width: 1,
-        ),
+      ),
+    );
+  }
+
+  Widget _makerCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String body,
+    Color accent,
+  ) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: accent.withValues(alpha: 0.25)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 24),
+          Icon(icon, color: accent, size: 32),
+          const SizedBox(height: 16),
           Text(
             title,
             style: GoogleFonts.inter(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1A202C),
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: scheme.onSurface,
             ),
-            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           Text(
-            description,
+            body,
             style: GoogleFonts.inter(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: const Color(0xFF4A5568),
-              height: 1.6,
+              fontSize: 14,
+              height: 1.55,
+              color: scheme.onSurfaceVariant,
             ),
-            textAlign: TextAlign.center,
           ),
         ],
       ),

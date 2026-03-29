@@ -54,14 +54,14 @@ class ContactScreen extends StatelessWidget {
                     Container(
                       constraints: const BoxConstraints(maxWidth: 800),
                       child: Text(
-                        'Ready to discuss your next project? Let\'s connect and explore how my diverse skills and innovative approach can contribute to your success.',
+                        'Reach out for embedded systems, product engineering, or hardware–software integration roles. Prefer email with context: stack, timeline, and what “done” means for your product.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
-                          fontSize: 22,
+                          fontSize: 20,
                           fontWeight: FontWeight.w400,
                           color: const Color(0xFF4A5568),
                           height: 1.6,
-                          letterSpacing: 0.3,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ),
@@ -193,7 +193,7 @@ class ContactScreen extends StatelessWidget {
                         'Explore my projects and technical contributions',
                         FontAwesomeIcons.github,
                         const Color(0xFF1A202C),
-                        () => _launchURL('https://github.com/jobinpthomas'),
+                        () => _launchURL('https://github.com/JOBIN-P-THOMAS'),
                       ),
                       _buildSocialCard(
                         'GrabCAD',
@@ -254,18 +254,7 @@ class ContactScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          'I am a person of embedded C firmware + Embedded hardware (PCB) + prototyping, making creative things with my diverse skills. I have made lots of projects, 3D printers, CNC machines, and need to show everything.',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            color: const Color(0xFF4A5568),
-                            height: 1.6,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          'I need to make a resume page which is very interactive, creative, and I need to show my projects and skills. As a Flutter developer, I need to rate my skills and show my projects in different fields.',
+                          'Embedded systems engineer with hands-on ownership from schematic to factory floor: STM32 firmware, RTOS motor control, PCB bring-up, EMI-aware layout, and Flutter tooling when the product needs a real operator UI. I debug like someone who has watched a line stop—not like someone who only reads logs on a laptop.',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             fontSize: 18,

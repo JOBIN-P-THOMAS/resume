@@ -12,10 +12,9 @@ import 'package:resume/main.dart';
 
 void main() {
   testWidgets('Resume app smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
     await tester.pumpWidget(const ResumeApp());
+    await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    // Verify that the app starts without crashing
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
